@@ -98,8 +98,7 @@ def test_allowed_origins_dedup(monkeypatch: pytest.MonkeyPatch) -> None:
         del sys.modules[mod]
 
     # Use defaults that match the static fallbacks to test dedup
-    monkeypatch.setenv("CHATBOT_FRONTEND_HOST", "localhost")
-    monkeypatch.setenv("CHATBOT_FRONTEND_PORT", "8501")
+    monkeypatch.setenv("CHATBOT_FRONTEND_URL", "http://localhost:8501")
 
     import backend.main as backend_module
     importlib.reload(backend_module)

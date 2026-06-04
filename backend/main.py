@@ -30,8 +30,7 @@ MODEL_NAME = os.environ.get("CHATBOT_MODEL_NAME", "DeepHat/DeepHat-V1-7B")
 DB_PATH = Path(__file__).resolve().parent.parent / "chatbot.db"
 ALLOWED_ORIGINS = sorted(
     {
-        f"http://{os.environ.get('CHATBOT_FRONTEND_HOST', 'localhost')}:"
-        f"{os.environ.get('CHATBOT_FRONTEND_PORT', '8501')}",
+        os.environ.get("CHATBOT_FRONTEND_URL", "http://localhost:8501").rstrip("/"),
         "http://localhost:8501",
         "http://127.0.0.1:8501",
     }

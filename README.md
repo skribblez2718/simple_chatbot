@@ -57,9 +57,26 @@ The backend and frontend both `load_dotenv()` on startup.
 | `CHATBOT_MODEL_NAME`       | `DeepHat/DeepHat-V1-7B`  | HuggingFace model id used for inference                                          |
 | `CHATBOT_BACKEND_HOST`     | `127.0.0.1`              | Host the embedded FastAPI server binds to                                        |
 | `CHATBOT_BACKEND_PORT`     | `8000`                   | Port the embedded FastAPI server binds to                                        |
-| `CHATBOT_FRONTEND_HOST`    | `localhost`              | Streamlit host — used to build the CORS allow-list                               |
-| `CHATBOT_FRONTEND_PORT`    | `8501`                   | Streamlit port — used to build the CORS allow-list                               |
+| `CHATBOT_FRONTEND_URL`    | `http://localhost:8501`   | Full URL of the Streamlit frontend — used by the backend for CORS              |
 | `CHATBOT_EMBED_BACKEND`    | `1`                      | Set to `0` to disable the auto-start and run the backend manually                |
+
+### Ports
+
+This project uses two ports. Each is configured in a different place, and changing one does not change the other.
+
+**Backend port** — the port the embedded FastAPI server binds to. Set this with `CHATBOT_BACKEND_PORT` in `.env` (default `8000`). The frontend reads this value to know where to send API requests, and the backend reads it to know which port to open.
+
+**Frontend (Streamlit) port** — the port the Streamlit web server binds to. Streamlit resolves this through its own standard configuration, in this priority order:
+
+1. Command-line flag: `streamlit run frontend/app.py --server.port=8501`
+2. `.streamlit/config.toml` under `[server]`:
+   ```toml
+   [server]
+   port = 8501
+   ```
+3. Streamlit's default: `8501`
+
+`CHATBOT_FRONTEND_URL` in `.env` (default `http://localhost:8501`) is **separate** from Streamlit's bind port. It exists so that the backend knows which Streamlit origin to add to its CORS allowlist. If you change the Streamlit bind port using any of the three methods above, update `CHATBOT_FRONTEND_URL` to match.
 
 ## GPU Support
 
