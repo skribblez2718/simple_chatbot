@@ -1,4 +1,7 @@
-"""Simple Chatbot Backend — FastAPI server for DeepHat-V1-7B inference."""
+"""Simple Chatbot Backend — FastAPI server for LLM inference.
+
+Model is selected via the CHATBOT_MODEL_NAME environment variable
+(default: DeepHat/DeepHat-V1-7B)."""
 # ruff: noqa: E501
 
 from __future__ import annotations

@@ -65,8 +65,12 @@ BACKEND_HOST = os.environ.get("CHATBOT_BACKEND_HOST", "127.0.0.1")
 BACKEND_PORT = int(os.environ.get("CHATBOT_BACKEND_PORT", "8000"))
 BACKEND_URL = f"http://{BACKEND_HOST}:{BACKEND_PORT}"
 EMBED_BACKEND = os.environ.get("CHATBOT_EMBED_BACKEND", "1") == "1"
+_RAW_MODEL_NAME = os.environ.get("CHATBOT_MODEL_NAME", "DeepHat/DeepHat-V1-7B")
+# Display name defaults to the model name with the "org/" prefix stripped
+# and "/" replaced with "-". Override via CHATBOT_MODEL_DISPLAY_NAME.
 MODEL_DISPLAY_NAME = os.environ.get(
-    "CHATBOT_MODEL_DISPLAY_NAME", "DeepHat-V1-7B"
+    "CHATBOT_MODEL_DISPLAY_NAME",
+    _RAW_MODEL_NAME.split("/")[-1],
 )
 
 # ---------------------------------------------------------------------------
@@ -466,19 +470,30 @@ div:hover > div > [class*="st-key-del_"] button,
    use aria-label on the content div instead. */
 .stChatMessage:has([aria-label="Chat message from user"]) {
     flex-direction: row-reverse;
+    align-items: center !important;
 }
+/* USER message bubble - force minimum height and use flexbox for vertical centering.
+   The inner stVerticalBlock has flex: 0 0 auto which can collapse it.
+   We set min-height on the bubble and overflow: visible everywhere. */
 .stChatMessage:has([aria-label="Chat message from user"]) [data-testid="stChatMessageContent"] {
     background-color: rgba(59, 130, 246, 0.08);
     border: 1px solid rgba(59, 130, 246, 0.18);
     border-radius: 14px 14px 8px 14px;
-    padding: 0.65rem 0.9rem 0.75rem 0.9rem;
+    padding: 0.7rem 1rem;
     max-width: 75%;
     margin-left: auto !important;
     margin-right: 0 !important;
     text-align: left;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-    height: auto !important;
-    min-height: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+    min-height: 2.8rem !important;
+    overflow: visible !important;
+}
+.stChatMessage:has([aria-label="Chat message from user"]) \
+    [data-testid="stChatMessageContent"] * {
+    overflow: visible !important;
 }
 /* Force the inner vertical block to match its text content height
    so that the parent's equal padding produces visual centering. */
@@ -495,7 +510,22 @@ div:hover > div > [class*="st-key-del_"] button,
     [data-testid="stChatMessageContent"] \
     [data-testid="stVerticalBlock"] > div {
     height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
     overflow: visible !important;
+    flex: 0 0 auto !important;
+}
+/* Force the stMarkdown element to size to its content (it has flex: 0 1 auto
+   by default which prevents growth - this was causing the text to overflow). */
+.stChatMessage:has([aria-label="Chat message from user"]) \
+    [data-testid="stChatMessageContent"] \
+    [data-testid="stMarkdown"] {
+    height: auto !important;
+    min-height: 1.5em !important;
+    max-height: none !important;
+    flex: 1 1 auto !important;
+    overflow: visible !important;
+    display: block !important;
 }
 
 /* ASSISTANT — left-aligned, no background */
@@ -516,6 +546,14 @@ div:hover > div > [class*="st-key-del_"] button,
     line-height: 1.6;
     margin: 0.35em 0;
     font-size: 0.95rem;
+}
+/* USER message <p> - override general p styling to fit the centered bubble */
+.stChatMessage:has([aria-label="Chat message from user"]) \
+    [data-testid="stChatMessageContent"] p {
+    text-align: left;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.4;
 }
 [data-testid="stChatMessageContent"] p:first-child { margin-top: 0; }
 [data-testid="stChatMessageContent"] p:last-child { margin-bottom: 0; }

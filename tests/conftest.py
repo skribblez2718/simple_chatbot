@@ -38,7 +38,7 @@ def mock_model() -> Generator[MagicMock, None, None]:
 
         mock_tokenizer = MagicMock()
         mock_tokenizer.decode.return_value = (
-            "Hello! I am DeepHat-V1-7B. How can I help you today?"
+            "Hello! I am a mock model. How can I help you today?"
         )
         mock_tokenizer.eos_token_id = 0
         mock_tokenizer.pad_token_id = 0
@@ -79,7 +79,7 @@ async def app(mock_model: MagicMock) -> FastAPI:
     # Get the tokenizer from the patch
     backend_module._tokenizer = MagicMock()
     backend_module._tokenizer.decode.return_value = (
-        "Hello! I am DeepHat-V1-7B. How can I help you today?"
+        "Hello! I am a mock model. How can I help you today?"
     )
     backend_module._tokenizer.pad_token_id = 0
     backend_module._tokenizer.eos_token_id = 0
