@@ -4,6 +4,24 @@ A local AI chatbot capstone project for the **Building Generative AI-Powered App
 
 The application uses a **FastAPI** backend serving a HuggingFace model of your choice — configurable via `.env` — and a **Streamlit** frontend providing a ChatGPT-like chat interface.
 
+## Quick Start (with Make)
+
+```bash
+make install       # create .venv, install all deps
+make run           # launch Streamlit UI (auto-starts FastAPI backend)
+```
+
+Then open **http://localhost:8501** in your browser.
+
+Other targets:
+
+| Command | What it does |
+|---------|-------------|
+| `make test`   | Run the full test suite (44 tests, models mocked) |
+| `make lint`   | Lint-check all source files with ruff |
+| `make format` | Auto-format all source files with ruff |
+| `make clean`  | Remove .venv, caches, and runtime artifacts |
+
 ## Features
 
 - 🤖 **Local AI Inference** — Runs a model on your machine via HuggingFace Transformers
@@ -20,10 +38,18 @@ The application uses a **FastAPI** backend serving a HuggingFace model of your c
 
 - **Python 3.11+**
 - **uv** (package manager) — install with `curl -LsSf https://astral.sh/uv/install.sh | sh`
+- **make** — available on most systems; on Debian/Ubuntu: `sudo apt install build-essential`
 - **Enough free (V)RAM** — the 7B BF16 model needs ~14 GB of combined VRAM/system RAM
 - **Internet access** — to download the model from HuggingFace on first run
 
 ## Install
+
+```bash
+# One command — creates .venv and installs all dependencies
+make install
+```
+
+Or without `make`:
 
 ```bash
 # 1. Clone / cd into the project
@@ -40,7 +66,7 @@ source .venv/bin/activate        # macOS / Linux
 uv pip install -e .
 ```
 
-> To run the test suite, install the dev extras: `uv pip install -e ".[dev]"`
+> To run the test suite: `uv pip install -e ".[dev]"` or `make install` (includes dev deps).
 
 ## Configuration (`.env`)
 
@@ -108,7 +134,14 @@ INFO  Model sharded: cuda:0=19 layers, cuda:1=13 layers
 
 If sharding fails, the loader falls back to single-GPU and then CPU. Every fallback attempt is logged.
 
-## Run (Single Command)
+## Run
+
+```bash
+# Quick start:
+make run
+```
+
+Or manually:
 
 ```bash
 streamlit run frontend/app.py
